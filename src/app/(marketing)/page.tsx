@@ -17,6 +17,8 @@ export default function HomePage() {
 
       {/* ----------------------------------------------------- Stat band */}
       <section className="border-b border-ink-900/10 bg-cream-100">
+        {/* Gold hairline echoing the hero's survey datum line */}
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-gold-500/55 to-transparent" />
         <div className="shell grid grid-cols-2 gap-px md:grid-cols-4">
           {stats.map((s, i) => (
             <Reveal

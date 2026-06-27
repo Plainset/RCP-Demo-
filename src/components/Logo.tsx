@@ -1,37 +1,30 @@
 import Link from "next/link";
+import { asset } from "@/lib/site";
 
 type Props = {
-  variant?: "light" | "dark"; // light = for dark backgrounds
-  className?: string;
+  variant?: "light" | "dark"; // kept for API compatibility; the lockup sits on
+  className?: string; //          its own brand-blue backdrop, so it reads on any bg
   href?: string | null;
 };
 
 /**
- * Wordmark for Rubens Capital Partners — a monogram "RCP" mark in a
- * gold-ruled square beside the full name. Pure SVG/CSS, no asset files,
- * so it renders identically on static hosting.
+ * Official Rubens Capital Partners wordmark (the real white serif lockup,
+ * carried over from rubenscapital.nl) presented on the firm's brand-blue
+ * backdrop (#0C4776, sampled from their logo mark). Self-hosted PNG so it
+ * works under the GitHub Pages base path and the CSP img-src 'self'.
  */
-export default function Logo({ variant = "dark", className = "", href = "/" }: Props) {
-  const isLight = variant === "light";
-  const ink = isLight ? "text-cream-50" : "text-ink-900";
-  const sub = isLight ? "text-cream-200/70" : "text-ink-600/70";
-
+export default function Logo({ className = "", href = "/" }: Props) {
   const content = (
-    <span className={`group inline-flex items-center gap-3 ${className}`}>
-      <span className="relative grid h-10 w-10 place-items-center">
-        <span className="absolute inset-0 rounded-[3px] border border-gold-500/70 transition-colors duration-500 group-hover:border-gold-400" />
-        <span className="absolute inset-[3px] rounded-[2px] bg-gold-500/10" />
-        <span className="font-display text-[0.95rem] leading-none tracking-tight text-gold-500">
-          R
-        </span>
-      </span>
-      <span className="flex flex-col leading-none">
-        <span className={`font-display text-[1.05rem] tracking-tight ${ink}`}>
-          Rubens Capital
-        </span>
-        <span className={`mt-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.32em] ${sub}`}>
-          Partners
-        </span>
+    <span className={`group inline-flex items-center ${className}`}>
+      <span className="inline-flex items-center justify-center rounded-[4px] bg-[#0C4776] px-3 py-2 shadow-sm ring-1 ring-white/10 transition-colors duration-500 group-hover:bg-[#0e5490]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={asset("/brand/rcp-logo-white.png")}
+          alt="Rubens Capital Partners"
+          width={371}
+          height={120}
+          className="h-9 w-auto sm:h-10"
+        />
       </span>
     </span>
   );
