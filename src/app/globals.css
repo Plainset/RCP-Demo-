@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* Explicit source globs (belt-and-braces alongside v4 auto-detection). */
+@source "../**/*.{ts,tsx}";
+
+/* ------------------------------------------------------------------ *
+ *  Rubens Capital Partners — design tokens
+ *  Premium institutional: deep ink navy, brass gold, warm cream.
+ * ------------------------------------------------------------------ */
+@theme {
+  /* Brand — ink / navy */
+  --color-ink-950: #050d18;
+  --color-ink-900: #081626;
+  --color-ink-800: #0c2034;
+  --color-ink-700: #122c45;
+  --color-ink-600: #1b3a59;
+  --color-ink-500: #2a4d70;
+  --color-ink-400: #6b7d92; /* muted slate — secondary text */
+  --color-ink-300: #97a4b4; /* light slate — tertiary text */
+
+  /* Brand — brass / gold accent */
+  --color-gold-300: #e6d2a6;
+  --color-gold-400: #d6bb83;
+  --color-gold-500: #c4a368;
+  --color-gold-600: #a8884f;
+  --color-gold-700: #876b3c;
+
+  /* Warm cream / ivory neutrals */
+  --color-cream-50: #fbf9f4;
+  --color-cream-100: #f5f1e8;
+  --color-cream-200: #eae3d4;
+  --color-cream-300: #e0d6c2;
+
+  /* Functional accents (portal) */
+  --color-positive: #3f9e74;
+  --color-negative: #c2603f;
+
+  /* Typography */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Easing */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ------------------------------------------------------------------ *
+ *  Base
+ * ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-cream-50);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv01";
+  }
+
+  ::selection {
+    background-color: var(--color-gold-400);
+    color: var(--color-ink-950);
+  }
+
+  /* Refined focus ring for keyboard users */
+  :focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ *  Reusable components
+ * ------------------------------------------------------------------ */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 768px) {
+    .shell { padding-inline: 2.5rem; }
+  }
+
+  /* Eyebrow / kicker label */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-gold-600);
+  }
+  .eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .eyebrow-center::before { display: none; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.85rem 1.6rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.35s var(--ease-soft);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-gold {
+    background: var(--color-gold-500);
+    color: var(--color-ink-950);
+  }
+  .btn-gold:hover {
+    background: var(--color-gold-400);
+    transform: translateY(-1px);
+    box-shadow: 0 12px 30px -12px rgba(196, 163, 104, 0.6);
+  }
+  .btn-ink {
+    background: var(--color-ink-900);
+    color: var(--color-cream-50);
+  }
+  .btn-ink:hover {
+    background: var(--color-ink-800);
+    transform: translateY(-1px);
+  }
+  .btn-outline {
+    border: 1px solid color-mix(in srgb, var(--color-ink-900) 25%, transparent);
+    color: var(--color-ink-900);
+  }
+  .btn-outline:hover {
+    border-color: var(--color-gold-500);
+    color: var(--color-gold-700);
+  }
+  .btn-ghost-light {
+    border: 1px solid rgba(245, 241, 232, 0.3);
+    color: var(--color-cream-50);
+  }
+  .btn-ghost-light:hover {
+    border-color: var(--color-gold-400);
+    color: var(--color-gold-300);
+  }
+
+  /* Hairline divider */
+  .rule {
+    height: 1px;
+    background: color-mix(in srgb, var(--color-ink-900) 12%, transparent);
+  }
+
+  /* Card */
+  .card {
+    background: #fff;
+    border: 1px solid color-mix(in srgb, var(--color-ink-900) 8%, transparent);
+    border-radius: 4px;
+    transition: all 0.4s var(--ease-soft);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ *  Animations
+ * ------------------------------------------------------------------ */
+@layer utilities {
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    animation: reveal 0.9s var(--ease-soft) forwards;
+  }
+  .reveal-1 { animation-delay: 0.08s; }
+  .reveal-2 { animation-delay: 0.18s; }
+  .reveal-3 { animation-delay: 0.30s; }
+  .reveal-4 { animation-delay: 0.42s; }
+
+  @keyframes reveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { animation: none; opacity: 1; transform: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  .text-balance { text-wrap: balance; }
+  .bg-grain {
+    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+}
