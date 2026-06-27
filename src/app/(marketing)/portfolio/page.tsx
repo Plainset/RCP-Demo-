@@ -119,39 +119,58 @@ export default function PortfolioPage() {
         </div>
       </section>
 
-      {/* Geographic split */}
+      {/* Geographic reach */}
       <section className="bg-ink-950 py-24 text-cream-50 md:py-32">
-        <div className="shell grid gap-12 md:grid-cols-2 md:items-center">
+        <div className="shell">
           <SectionHeading
             tone="light"
-            eyebrow="Geography"
-            title="Two markets, one disciplined approach."
-            intro="A core Dutch platform built over two decades, complemented by a growth-oriented US multifamily strategy executed with trusted local partners since 2017."
+            align="center"
+            eyebrow="Geographic reach"
+            title="An established Dutch core, with international reach."
+            intro="Each market is entered deliberately and managed hands-on — a diversified domestic platform built over two decades, alongside a high-growth international strategy executed with trusted local partners."
+            className="mx-auto"
           />
-          <Reveal delay={120} className="space-y-px overflow-hidden rounded-sm">
+
+          <div className="mt-14 grid gap-5 md:grid-cols-2">
             {[
-              { country: "Netherlands", detail: "Residential · Offices · Senior & care housing", share: 92 },
-              { country: "United States", detail: "Multifamily — core-plus & value-add", share: 8 },
-            ].map((g) => (
-              <div key={g.country} className="bg-ink-900 p-7">
-                <div className="flex items-baseline justify-between">
-                  <div className="font-display text-2xl">{g.country}</div>
-                  <div className="font-display text-2xl text-gold-400">{g.share}%</div>
+              {
+                country: "Netherlands",
+                label: "Established core",
+                desc: "Two decades building a diversified, supply-constrained Dutch portfolio across residential, offices, and senior & care housing.",
+                facts: ["Since 2004", "Residential · Offices · Care", "~14,300 homes"],
+              },
+              {
+                country: "United States",
+                label: "International growth",
+                desc: "A high-growth multifamily strategy in select US metros, executed hands-on with trusted local operating partners.",
+                facts: ["Active since 2017", "Core-plus & value-add", "Sun Belt & gateway metros"],
+              },
+            ].map((m, i) => (
+              <Reveal
+                key={m.country}
+                delay={i * 110}
+                className="flex flex-col rounded-sm border border-cream-100/10 bg-ink-900 p-8"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="font-display text-2xl">{m.country}</h3>
+                  <span className="rounded-full border border-gold-500/40 px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-gold-400">
+                    {m.label}
+                  </span>
                 </div>
-                <div className="mt-1 text-sm text-cream-200/60">{g.detail}</div>
-                <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-cream-100/10">
-                  <div
-                    className="h-full rounded-full bg-gold-500"
-                    style={{ width: `${g.share}%` }}
-                  />
-                </div>
-              </div>
+                <p className="mt-4 text-sm leading-relaxed text-cream-200/70">{m.desc}</p>
+                <ul className="mt-6 flex flex-wrap gap-2">
+                  {m.facts.map((f) => (
+                    <li
+                      key={f}
+                      className="rounded-full bg-cream-100/[0.06] px-3 py-1.5 text-xs text-cream-200/75"
+                    >
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
             ))}
-            <p className="bg-ink-900 p-7 pt-5 text-xs leading-relaxed text-cream-200/45">
-              Indicative split by assets under management. US figures converted to
-              euros for illustration. Sample data for demonstration.
-            </p>
-          </Reveal>
+          </div>
         </div>
       </section>
 

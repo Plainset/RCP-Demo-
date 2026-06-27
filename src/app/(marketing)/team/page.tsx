@@ -3,7 +3,7 @@ import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 import PageHero from "@/components/PageHero";
 import CTABand from "@/components/CTABand";
-import { team, initials, type Member } from "@/lib/site";
+import { team, initials, asset, type Member } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Team",
@@ -18,11 +18,31 @@ const leadership = team.filter((m) => m.group === "Leadership");
 const management = team.filter((m) => m.group === "Management");
 const investment = team.filter((m) => m.group === "Investment & Asset Team");
 
-function Avatar({ name, large = false }: { name: string; large?: boolean }) {
+function Avatar({
+  name,
+  photo,
+  large = false,
+}: {
+  name: string;
+  photo?: string;
+  large?: boolean;
+}) {
+  const dim = large ? "h-16 w-16" : "h-12 w-12";
+  if (photo) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={asset(photo)}
+        alt={name}
+        loading="lazy"
+        className={`${dim} shrink-0 rounded-sm object-cover object-top`}
+      />
+    );
+  }
   return (
     <div
-      className={`grid place-items-center rounded-sm bg-gradient-to-br from-ink-800 to-ink-950 font-display text-gold-400 ${
-        large ? "h-16 w-16 text-xl" : "h-12 w-12 text-base"
+      className={`grid shrink-0 place-items-center rounded-sm bg-gradient-to-br from-ink-800 to-ink-950 font-display text-gold-400 ${dim} ${
+        large ? "text-xl" : "text-base"
       }`}
     >
       {initials(name)}
@@ -34,7 +54,7 @@ function LeadCard({ m, i }: { m: Member; i: number }) {
   return (
     <Reveal delay={(i % 2) * 90} className="card group p-7 hover:-translate-y-1 hover:shadow-xl">
       <div className="flex items-center gap-4">
-        <Avatar name={m.name} large />
+        <Avatar name={m.name} photo={m.photo} large />
         <div>
           <h3 className="font-display text-xl leading-tight text-ink-900">{m.name}</h3>
           <div className="mt-1 text-[0.78rem] font-semibold uppercase tracking-wider text-gold-600">
@@ -76,7 +96,7 @@ export default function TeamPage() {
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {management.map((m, i) => (
               <Reveal key={m.name} delay={(i % 4) * 80} className="card p-6">
-                <Avatar name={m.name} />
+                <Avatar name={m.name} photo={m.photo} />
                 <h3 className="mt-4 font-display text-lg leading-tight text-ink-900">{m.name}</h3>
                 <div className="mt-1 text-[0.72rem] font-semibold uppercase tracking-wider text-gold-600">
                   {m.role}
@@ -103,7 +123,7 @@ export default function TeamPage() {
                 delay={(i % 4) * 70}
                 className="flex items-center gap-4 bg-cream-50 p-6 transition-colors hover:bg-white"
               >
-                <Avatar name={m.name} />
+                <Avatar name={m.name} photo={m.photo} />
                 <div>
                   <h3 className="font-display text-base leading-tight text-ink-900">{m.name}</h3>
                   <div className="mt-1 text-[0.7rem] font-semibold uppercase tracking-wider text-gold-600">

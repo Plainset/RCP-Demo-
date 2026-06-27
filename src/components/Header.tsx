@@ -24,6 +24,9 @@ export default function Header() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  // Over the dark hero (top of page, not scrolled) → light treatment.
+  const light = !scrolled;
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
@@ -32,8 +35,15 @@ export default function Header() {
           : "border-b border-transparent bg-transparent"
       }`}
     >
-      <div className="shell flex h-20 items-center justify-between">
-        <Logo variant="dark" />
+      {/* Scrim for readability while transparent over the dark hero. */}
+      <div
+        className={`pointer-events-none absolute inset-0 bg-gradient-to-b from-ink-950/55 to-transparent transition-opacity duration-500 ${
+          light ? "opacity-100" : "opacity-0"
+        }`}
+      />
+
+      <div className="shell relative flex h-20 items-center justify-between">
+        <Logo variant={light ? "light" : "dark"} />
 
         <nav className="hidden items-center gap-8 lg:flex">
           {navLinks.map((l) => (
@@ -41,12 +51,18 @@ export default function Header() {
               key={l.href}
               href={l.href}
               className={`relative text-[0.82rem] font-medium tracking-wide transition-colors duration-300 ${
-                isActive(l.href) ? "text-ink-900" : "text-ink-600 hover:text-ink-900"
+                isActive(l.href)
+                  ? light
+                    ? "text-cream-50"
+                    : "text-ink-900"
+                  : light
+                    ? "text-cream-100/85 hover:text-cream-50"
+                    : "text-ink-600 hover:text-ink-900"
               }`}
             >
               {l.label}
               <span
-                className={`absolute -bottom-1.5 left-0 h-px bg-gold-500 transition-all duration-300 ${
+                className={`absolute -bottom-1.5 left-0 h-px bg-gold-400 transition-all duration-300 ${
                   isActive(l.href) ? "w-full" : "w-0"
                 }`}
               />
@@ -55,35 +71,32 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <Link href="/login" className="btn btn-ink text-[0.72rem]">
+          <Link
+            href="/login"
+            className={`btn text-[0.72rem] ${light ? "btn-ghost-light" : "btn-ink"}`}
+          >
             Investor Login
           </Link>
         </div>
 
         {/* Mobile toggle */}
         <button
+          type="button"
           onClick={() => setOpen((v) => !v)}
           className="relative z-50 flex h-10 w-10 items-center justify-center lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
         >
-          <span className="relative block h-4 w-6">
-            <span
-              className={`absolute left-0 block h-0.5 w-6 bg-ink-900 transition-all duration-300 ${
-                open ? "top-1.5 rotate-45" : "top-0"
-              }`}
-            />
-            <span
-              className={`absolute left-0 top-1.5 block h-0.5 w-6 bg-ink-900 transition-all duration-300 ${
-                open ? "opacity-0" : "opacity-100"
-              }`}
-            />
-            <span
-              className={`absolute left-0 block h-0.5 w-6 bg-ink-900 transition-all duration-300 ${
-                open ? "top-1.5 -rotate-45" : "top-3"
-              }`}
-            />
-          </span>
+          {(() => {
+            const bar = light ? "bg-cream-50" : "bg-ink-900";
+            return (
+              <span className="relative block h-4 w-6">
+                <span className={`absolute left-0 block h-0.5 w-6 ${bar} transition-all duration-300 ${open ? "top-1.5 rotate-45" : "top-0"}`} />
+                <span className={`absolute left-0 top-1.5 block h-0.5 w-6 ${bar} transition-all duration-300 ${open ? "opacity-0" : "opacity-100"}`} />
+                <span className={`absolute left-0 block h-0.5 w-6 ${bar} transition-all duration-300 ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
+              </span>
+            );
+          })()}
         </button>
       </div>
 

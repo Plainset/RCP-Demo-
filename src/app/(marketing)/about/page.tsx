@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import CountUp from "@/components/CountUp";
 import SectionHeading from "@/components/SectionHeading";
 import PageHero from "@/components/PageHero";
 import CTABand from "@/components/CTABand";
@@ -66,7 +66,15 @@ export default function AboutPage() {
         <div className="shell grid grid-cols-2 gap-px md:grid-cols-4">
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 90} className="px-2 py-10 text-center md:py-14">
-              <div className="font-display text-4xl text-ink-900 md:text-5xl">{s.value}</div>
+              <CountUp
+                className="font-display text-4xl text-ink-900 md:text-5xl"
+                to={s.to}
+                value={s.value}
+                prefix={s.prefix}
+                suffix={s.suffix}
+                decimals={s.decimals}
+                commas={s.commas}
+              />
               <div className="mt-3 text-[0.82rem] font-semibold uppercase tracking-wide text-ink-700">
                 {s.label}
               </div>
@@ -130,37 +138,41 @@ export default function AboutPage() {
           </div>
           <Reveal delay={120} className="md:col-span-7">
             <ul className="grid gap-px overflow-hidden rounded-sm border border-ink-900/10 bg-ink-900/10 sm:grid-cols-2">
-              {compliance.map((c) => {
-                const inner = (
-                  <>
-                    <span className="text-sm font-medium text-ink-800">{c.label}</span>
-                    <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-gold-600">
-                      {c.href ? "View" : "PDF"}
+              {compliance.map((c) => (
+                <li key={c.label}>
+                  <a
+                    href={c.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center justify-between gap-4 bg-cream-50 px-6 py-5 transition-colors hover:bg-white"
+                  >
+                    <span className="text-sm font-medium text-ink-800 group-hover:text-ink-900">
+                      {c.label}
                     </span>
-                  </>
-                );
-                const cls =
-                  "flex items-center justify-between gap-4 bg-cream-50 px-6 py-5 transition-colors hover:bg-white";
-                return (
-                  <li key={c.label}>
-                    {c.href ? (
-                      <Link href={c.href} className={cls}>
-                        {inner}
-                      </Link>
-                    ) : (
-                      <div className={cls}>{inner}</div>
-                    )}
-                  </li>
-                );
-              })}
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap text-[0.65rem] font-semibold uppercase tracking-wider text-gold-600 transition-colors group-hover:text-gold-700">
+                      PDF
+                      <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M7 17 17 7M9 7h8v8" />
+                      </svg>
+                    </span>
+                  </a>
+                </li>
+              ))}
             </ul>
           </Reveal>
+          <p className="md:col-span-12 mt-4 text-xs text-ink-500">
+            Documents link to the official versions published by Rubens Capital
+            Partners and open in a new tab.
+          </p>
         </div>
       </section>
 
       <CTABand
-        title="Let's talk about your mandate."
-        body="We work with a select group of institutional investors. We'd welcome a conversation."
+        eyebrow="Partnership"
+        title="A considered partner for institutional capital."
+        body="We work with a select group of institutional investors and family offices. To discuss a mandate or request our latest materials, our investor relations team would be glad to speak with you."
+        primary={{ label: "Contact investor relations", href: "/contact" }}
+        secondary={{ label: "Investor login", href: "/login" }}
       />
     </>
   );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PortalPageTop, Kpi, Badge, Panel } from "@/components/portal-ui";
+import { Kpi, Badge, Panel } from "@/components/portal-ui";
 import { AreaChart, DonutChart } from "@/components/charts";
 import {
   investor,
@@ -24,12 +24,39 @@ export default function DashboardPage() {
 
   return (
     <>
-      <PortalPageTop
-        title="Portfolio overview"
-        subtitle={`Welcome back — ${investor.entity}`}
-      />
+      {/* Institutional welcome banner */}
+      <div className="border-b border-ink-900/10 bg-cream-50 px-6 py-9 md:px-10 md:py-12">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <span className="eyebrow">Investor portal</span>
+            <h1 className="mt-3 font-display text-3xl leading-[1.08] text-ink-900 sm:text-4xl md:text-[2.7rem]">
+              Welcome back,{" "}
+              <span className="text-gold-700">{investor.entity}</span>
+            </h1>
+            <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-600">
+              <span>Account {investor.accountId}</span>
+              <span className="text-ink-300">·</span>
+              <span>Relationship manager: {investor.relationshipManager}</span>
+              <span className="text-ink-300">·</span>
+              <span>Investor since {investor.memberSince}</span>
+            </p>
+          </div>
+          <div className="shrink-0 md:text-right">
+            <div className="text-[0.65rem] uppercase tracking-wider text-ink-500">
+              Reporting as of
+            </div>
+            <div className="font-display text-xl text-ink-900">{investor.asOf}</div>
+            <div className="mt-1 text-xs text-ink-500">
+              All values in {investor.reportingCurrency}
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="space-y-6 px-6 py-8 md:px-10">
+        <h2 className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-ink-500">
+          Portfolio overview
+        </h2>
         {/* Pending capital call alert */}
         {pendingCall && (
           <div className="flex flex-col gap-3 rounded-sm border border-gold-500/30 bg-gold-500/[0.07] p-4 sm:flex-row sm:items-center sm:justify-between">

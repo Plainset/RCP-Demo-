@@ -2,10 +2,10 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 import CTABand from "@/components/CTABand";
+import HomeHero from "@/components/HomeHero";
+import CountUp from "@/components/CountUp";
 import { company, stats, strategies, services } from "@/lib/site";
 
-const HERO_IMG =
-  "https://images.unsplash.com/photo-1534351590666-13e3e96b5017?auto=format&fit=crop&w=2000&q=80";
 const PORTAL_IMG =
   "https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1400&q=80";
 
@@ -13,46 +13,7 @@ export default function HomePage() {
   return (
     <>
       {/* ---------------------------------------------------------- Hero */}
-      <section className="relative flex min-h-[100svh] items-end overflow-hidden bg-ink-950 text-cream-50">
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${HERO_IMG})` }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink-950 via-ink-950/80 to-ink-950/40" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink-950/90 to-transparent" />
-
-        <div className="shell relative w-full pb-16 pt-36 md:pb-24">
-          <div className="max-w-3xl">
-            <span className="eyebrow reveal reveal-1">
-              Independent · Amsterdam · Est. {company.established}
-            </span>
-            <h1 className="reveal reveal-2 mt-6 font-display text-[2.6rem] leading-[1.04] text-balance sm:text-6xl md:text-7xl">
-              Real estate capital,
-              <br />
-              <span className="text-gold-400">stewarded with intent.</span>
-            </h1>
-            <p className="reveal reveal-3 mt-7 max-w-xl text-lg leading-relaxed text-cream-200/80">
-              An independent real estate asset &amp; investment management
-              platform — {company.aumLong} under management across the
-              Netherlands and the United States, on behalf of institutional
-              investors and family offices.
-            </p>
-            <div className="reveal reveal-4 mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link href="/portfolio" className="btn btn-gold">
-                Explore our strategies
-              </Link>
-              <Link href="/login" className="btn btn-ghost-light">
-                Investor login
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Scroll cue */}
-        <div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 md:block">
-          <div className="h-12 w-px animate-pulse bg-gradient-to-b from-gold-400 to-transparent" />
-        </div>
-      </section>
+      <HomeHero />
 
       {/* ----------------------------------------------------- Stat band */}
       <section className="border-b border-ink-900/10 bg-cream-100">
@@ -63,7 +24,15 @@ export default function HomePage() {
               delay={i * 90}
               className="px-2 py-10 text-center md:px-6 md:py-14"
             >
-              <div className="font-display text-4xl text-ink-900 md:text-5xl">{s.value}</div>
+              <CountUp
+                className="font-display text-4xl text-ink-900 md:text-5xl"
+                to={s.to}
+                value={s.value}
+                prefix={s.prefix}
+                suffix={s.suffix}
+                decimals={s.decimals}
+                commas={s.commas}
+              />
               <div className="mt-3 text-[0.82rem] font-semibold uppercase tracking-wide text-ink-700">
                 {s.label}
               </div>
