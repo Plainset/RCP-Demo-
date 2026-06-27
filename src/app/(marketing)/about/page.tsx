@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 import PageHero from "@/components/PageHero";
@@ -129,17 +130,29 @@ export default function AboutPage() {
           </div>
           <Reveal delay={120} className="md:col-span-7">
             <ul className="grid gap-px overflow-hidden rounded-sm border border-ink-900/10 bg-ink-900/10 sm:grid-cols-2">
-              {compliance.map((c) => (
-                <li
-                  key={c}
-                  className="flex items-center justify-between gap-4 bg-cream-50 px-6 py-5 transition-colors hover:bg-white"
-                >
-                  <span className="text-sm font-medium text-ink-800">{c}</span>
-                  <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-gold-600">
-                    PDF
-                  </span>
-                </li>
-              ))}
+              {compliance.map((c) => {
+                const inner = (
+                  <>
+                    <span className="text-sm font-medium text-ink-800">{c.label}</span>
+                    <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-gold-600">
+                      {c.href ? "View" : "PDF"}
+                    </span>
+                  </>
+                );
+                const cls =
+                  "flex items-center justify-between gap-4 bg-cream-50 px-6 py-5 transition-colors hover:bg-white";
+                return (
+                  <li key={c.label}>
+                    {c.href ? (
+                      <Link href={c.href} className={cls}>
+                        {inner}
+                      </Link>
+                    ) : (
+                      <div className={cls}>{inner}</div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </Reveal>
         </div>

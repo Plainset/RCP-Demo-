@@ -75,8 +75,14 @@ export default function Footer() {
           </p>
           <ul className="flex flex-wrap gap-x-5 gap-y-1">
             {compliance.map((c) => (
-              <li key={c} className="transition-colors hover:text-cream-200/80">
-                {c}
+              <li key={c.label} className="transition-colors hover:text-cream-200/80">
+                {c.href ? (
+                  <Link href={c.href} className="hover:text-gold-300">
+                    {c.label}
+                  </Link>
+                ) : (
+                  c.label
+                )}
               </li>
             ))}
           </ul>

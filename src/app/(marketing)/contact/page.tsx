@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import PageHero from "@/components/PageHero";
 import ContactForm from "@/components/ContactForm";
+import MapEmbed from "@/components/MapEmbed";
 import { company } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -12,9 +13,6 @@ export const metadata: Metadata = {
 
 const CONTACT_IMG =
   "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=2000&q=80";
-
-const MAP_SRC =
-  "https://www.google.com/maps?q=Parnassusweg+729,+1077+DG+Amsterdam&output=embed";
 
 const directions = [
   {
@@ -105,13 +103,7 @@ export default function ContactPage() {
       {/* Map */}
       <section className="bg-cream-100">
         <Reveal className="relative h-[420px] w-full overflow-hidden border-y border-ink-900/10">
-          <iframe
-            title="Rubens Capital Partners — Amsterdam office location"
-            src={MAP_SRC}
-            className="h-full w-full grayscale-[0.2]"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+          <MapEmbed />
         </Reveal>
       </section>
     </>

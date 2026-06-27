@@ -210,13 +210,14 @@ export const team: Member[] = [
   { name: "Paul Roelfzema", role: "Asset Manager", group: "Investment & Asset Team" },
 ];
 
-/* Regulatory documents referenced on the firm's site. */
-export const compliance: string[] = [
-  "AFM License (24 July 2017)",
-  "Articles of Association",
-  "2025 Compensation Policy",
-  "SFDR Disclosure",
-  "Privacy Statement",
+/* Regulatory documents referenced on the firm's site. An optional href turns the
+   entry into a link (only the Privacy Statement is a real page in this demo). */
+export const compliance: { label: string; href?: string }[] = [
+  { label: "AFM License (24 July 2017)" },
+  { label: "Articles of Association" },
+  { label: "2025 Compensation Policy" },
+  { label: "SFDR Disclosure" },
+  { label: "Privacy Statement", href: "/privacy" },
 ];
 
 /** Initials helper for avatar fallbacks. */

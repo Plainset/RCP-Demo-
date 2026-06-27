@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Keep GitHub Actions (checkout, setup-node, pages actions) patched.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # Keep npm dependencies (next, react, tailwind) patched.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5

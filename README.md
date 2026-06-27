@@ -83,6 +83,39 @@ variable is unset, so everything serves from `/`.
 
 ---
 
+## Security notes
+
+This is a static, backend-less site, so the attack surface is small — there is no
+server, database, or stored user data. The hardening that *is* applied:
+
+- **Content-Security-Policy** delivered via `<meta http-equiv>` (the only mechanism
+  available on GitHub Pages, which cannot send custom response headers). It locks
+  `default-src` to self, sets `object-src 'none'`, `base-uri 'self'`, `form-action
+  'self'`, and explicitly allow-lists the only external origins the site uses
+  (Unsplash images, the Google Maps embed). `script-src`/`style-src` must keep
+  `'unsafe-inline'` because a static export emits inline hydration scripts and React
+  inline styles with no per-request nonce.
+- **Referrer-Policy** `strict-origin-when-cross-origin` (via meta).
+- **Google Maps is click-to-load** — no contact with Google (IP, cookies, referrer)
+  until the visitor opts in — and the iframe is `sandbox`ed with a minimal referrer
+  policy. See the [Privacy Statement](src/app/(marketing)/privacy/page.tsx).
+- **Least-privilege CI** — the deploy workflow uses scoped `permissions:` and
+  passes inputs via env vars (no shell injection). Dependabot keeps Actions and npm
+  dependencies patched.
+- **No secrets** in the repo; mock client-side auth only; all portal data is fictional.
+
+**Known GitHub Pages limitations** (not enforceable without a CDN in front):
+`HSTS`, `X-Frame-Options` / CSP `frame-ancestors` (clickjacking), and
+`X-Content-Type-Options: nosniff` cannot be set, because they require real response
+headers that GitHub Pages does not allow. Residual clickjacking risk is negligible
+here (the portal gates only fictional sample data). To enforce them, front the site
+with a free **Cloudflare** zone and add the headers via a Transform Rule.
+`*.github.io` already forces HTTPS, so transport is encrypted by default.
+
+> npm audit may flag `next`/`postcss` advisories — these are SSR / middleware /
+> image-optimizer / Server-Actions specific and are **inert for this static export**
+> served with no Node runtime.
+
 ## Tech
 
 | | |

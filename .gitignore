@@ -14,13 +14,17 @@
 .DS_Store
 *.pem
 
+# local harness / editor state
+.claude/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# local env files (keep all env files out of git; allow committed examples)
+.env*
+!.env*.example
 
 # typescript
 *.tsbuildinfo

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 const field =
@@ -20,6 +21,7 @@ export default function ContactForm() {
           will be in touch shortly.
         </p>
         <button
+          type="button"
           onClick={() => setSent(false)}
           className="mt-6 text-sm font-semibold uppercase tracking-wider text-gold-700 hover:text-gold-600"
         >
@@ -75,8 +77,12 @@ export default function ContactForm() {
       <label className="flex items-start gap-3 text-xs leading-relaxed text-ink-600">
         <input required type="checkbox" className="mt-0.5 accent-gold-600" />
         <span>
-          I acknowledge the Privacy Statement and consent to Rubens Capital
-          Partners processing my details to respond to this enquiry.
+          I acknowledge the{" "}
+          <Link href="/privacy" className="font-semibold text-gold-700 hover:text-gold-600">
+            Privacy Statement
+          </Link>{" "}
+          and consent to Rubens Capital Partners processing my details to respond
+          to this enquiry.
         </span>
       </label>
       <button type="submit" className="btn btn-ink w-full">
