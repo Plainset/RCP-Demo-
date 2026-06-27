@@ -8,8 +8,13 @@ import { navLinks } from "@/lib/site";
 
 export default function Header() {
   const pathname = usePathname();
+  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  // On the home page the scroll-driven hero owns the light/dark signal
+  // (it stays pinned and dark for several screens). Default true so the
+  // header is light the moment the dark hero paints.
+  const [overHero, setOverHero] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -18,21 +23,39 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // The home hero broadcasts hero:enter / hero:leave as it pins and releases.
+  useEffect(() => {
+    if (!isHome) {
+      setOverHero(false);
+      return;
+    }
+    setOverHero(true);
+    const enter = () => setOverHero(true);
+    const leave = () => setOverHero(false);
+    window.addEventListener("hero:enter", enter);
+    window.addEventListener("hero:leave", leave);
+    return () => {
+      window.removeEventListener("hero:enter", enter);
+      window.removeEventListener("hero:leave", leave);
+    };
+  }, [isHome]);
+
   // Close the mobile menu on navigation.
   useEffect(() => setOpen(false), [pathname]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
-  // Over the dark hero (top of page, not scrolled) → light treatment.
-  const light = !scrolled;
+  // Light treatment while over a dark hero. On home that's driven by the
+  // pinned scroll hero; elsewhere it's simply "at the top of the page".
+  const light = isHome ? overHero : !scrolled;
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "border-b border-ink-900/10 bg-cream-50/90 backdrop-blur-md"
-          : "border-b border-transparent bg-transparent"
+        light
+          ? "border-b border-transparent bg-transparent"
+          : "border-b border-ink-900/10 bg-cream-50/90 backdrop-blur-md"
       }`}
     >
       {/* Scrim for readability while transparent over the dark hero. */}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/SectionHeading";
 import CTABand from "@/components/CTABand";
-import HomeHero from "@/components/HomeHero";
+import ScrollHero from "@/components/ScrollHero";
 import CountUp from "@/components/CountUp";
 import { company, stats, strategies, services } from "@/lib/site";
 
@@ -13,7 +13,7 @@ export default function HomePage() {
   return (
     <>
       {/* ---------------------------------------------------------- Hero */}
-      <HomeHero />
+      <ScrollHero />
 
       {/* ----------------------------------------------------- Stat band */}
       <section className="border-b border-ink-900/10 bg-cream-100">

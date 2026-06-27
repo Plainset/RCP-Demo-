@@ -21,15 +21,22 @@ export default function LoginPage() {
     if (getSession()) router.replace("/portal");
   }, [router]);
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) {
       setError("Please enter your email and password.");
       return;
     }
+    setError("");
     setSubmitting(true);
-    login(email);
-    router.push("/portal");
+    const result = await login(email, password);
+    if (result.ok) {
+      router.push("/portal");
+    } else {
+      setError(result.error);
+      setPassword("");
+      setSubmitting(false);
+    }
   }
 
   function useDemo() {
@@ -97,6 +104,7 @@ export default function LoginPage() {
                 Demo access
               </span>
               <button
+                type="button"
                 onClick={useDemo}
                 className="text-[0.7rem] font-semibold uppercase tracking-wider text-ink-700 underline decoration-gold-500/50 underline-offset-2 hover:text-ink-900"
               >
@@ -160,8 +168,9 @@ export default function LoginPage() {
             </Link>
           </p>
           <p className="mt-8 text-center text-[0.7rem] leading-relaxed text-ink-400">
-            Demo environment. Any credentials are accepted and all figures shown
-            are illustrative sample data.
+            Demo environment. Sign in with the credentials above — all other
+            details are rejected. Portfolio figures shown are illustrative
+            sample data.
           </p>
 
           <div className="mt-6 text-center">
