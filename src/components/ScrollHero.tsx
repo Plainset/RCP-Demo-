@@ -217,9 +217,9 @@ export default function ScrollHero() {
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(180deg, rgba(12,20,36,0.50), rgba(8,12,24,0.46)), linear-gradient(115deg, rgba(150,172,196,0.10), transparent 50%)",
-            backdropFilter: "saturate(0.6) brightness(0.96)",
-            WebkitBackdropFilter: "saturate(0.6) brightness(0.96)",
+              "linear-gradient(180deg, rgba(12,20,36,0.24), rgba(8,12,24,0.20)), linear-gradient(115deg, rgba(150,172,196,0.10), transparent 50%)",
+            backdropFilter: "saturate(0.68) brightness(1.10)",
+            WebkitBackdropFilter: "saturate(0.68) brightness(1.10)",
           }}
           aria-hidden="true"
         />
