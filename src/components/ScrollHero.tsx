@@ -3,21 +3,20 @@
 /* ------------------------------------------------------------------ *
  *  ScrollHero — a full-screen, scroll-driven cinematic hero.
  *
- *  Concept: "The View from Amsterdam Zuid." The camera starts INSIDE a
- *  dark, high-floor Zuidas office, framed by a floor-to-ceiling window
- *  that looks out onto the Amsterdam Zuid skyline at golden hour. As the
- *  user scrolls, the camera pushes forward — the dark interior + window
- *  mullions scale up and slide past the lens, the glass tint clears, and
- *  the skyline opens up to fill the frame. The headline then lands over
- *  the city, and a dawn dissolve hands off to the cream page below.
+ *  Concept: "The View from Amsterdam Zuid." We open INSIDE a real, dark
+ *  high-floor office lounge looking out through floor-to-ceiling glass.
+ *  As the user scrolls, the camera pushes toward the window and crosses
+ *  through the glass — the cool interior scales up and dissolves and the
+ *  warm golden-hour Amsterdam Zuid skyline opens up to fill the frame,
+ *  where the headline lands. A dawn dissolve hands off to the cream page.
  *
- *  Pinned (~340vh); scroll progress (0→1) drives one GSAP timeline.
- *  Pure DOM transform/opacity (GPU, 60fps) — no canvas, no video. The
- *  skyline is a self-hosted Unsplash photo (copyright-free), so it stays
- *  within img-src 'self'. Honours prefers-reduced-motion (static composed
- *  frame) and simplifies the window on mobile. GSAP is bundled (no CDN).
+ *  Pinned (~340vh); scroll progress (0→1) drives one GSAP timeline. Pure
+ *  DOM transform/opacity (GPU, 60fps) — no canvas/video. Both photos are
+ *  self-hosted, copyright-free Unsplash images (img-src 'self'). Honours
+ *  prefers-reduced-motion (static composed frame). GSAP is bundled.
  *
- *  Photo: Amsterdam Zuid / Zuidas — Lennart Schulz (Unsplash License).
+ *  Interior: dark city lounge (Unsplash). Skyline: Amsterdam Zuid /
+ *  Zuidas — Lennart Schulz (Unsplash License).
  * ------------------------------------------------------------------ */
 
 import { Fragment, useEffect, useRef } from "react";
@@ -91,20 +90,6 @@ export default function ScrollHero() {
       }
     };
 
-    // The window rectangle (as % of viewport) the perspective room recedes to.
-    // Smaller on desktop (deeper room), larger on mobile so the view reads.
-    const setRoomVars = () => {
-      const el = interiorRef.current;
-      if (!el) return;
-      const m = window.innerWidth < 768;
-      el.style.setProperty("--wx0", m ? "22%" : "35%");
-      el.style.setProperty("--wx1", m ? "78%" : "65%");
-      el.style.setProperty("--wy0", m ? "34%" : "29%");
-      el.style.setProperty("--wy1", m ? "66%" : "71%");
-    };
-    setRoomVars();
-    window.addEventListener("resize", setRoomVars);
-
     /* ---- Reduced motion: composed final frame (out the window) --- */
     if (reduce) {
       gsap.set(skylineRef.current, { scale: 1.12 });
@@ -129,7 +114,6 @@ export default function ScrollHero() {
       window.addEventListener("scroll", onScroll, { passive: true });
       return () => {
         window.removeEventListener("scroll", onScroll);
-        window.removeEventListener("resize", setRoomVars);
         window.dispatchEvent(new Event("hero:leave"));
       };
     }
@@ -138,9 +122,9 @@ export default function ScrollHero() {
     const ctxGsap = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
 
-      gsap.set(skylineRef.current, { scale: 1.04, transformOrigin: "50% 45%" });
+      gsap.set(skylineRef.current, { scale: 1.05, transformOrigin: "50% 45%" });
       gsap.set(glassRef.current, { autoAlpha: 1 });
-      gsap.set(interiorRef.current, { scale: 1, autoAlpha: 1, transformOrigin: "50% 50%" });
+      gsap.set(interiorRef.current, { scale: 1, autoAlpha: 1, transformOrigin: "54% 44%" });
       gsap.set([glowRef.current, scrimRef.current, dawnRef.current], { autoAlpha: 0 });
       gsap.set([eyebrowRef.current, taglineRef.current, ctaRef.current], { y: 18, autoAlpha: 0 });
 
@@ -165,12 +149,12 @@ export default function ScrollHero() {
         },
       });
 
-      // The push: skyline drifts forward slowly (far); interior rushes past
-      // (near) and fades; the glass tint clears as we exit.
-      tl.to(skylineRef.current, { scale: 1.22, ease: "none", duration: 1 }, 0);
-      tl.to(glassRef.current, { autoAlpha: 0, duration: 0.48, ease: "power1.inOut" }, 0.08);
-      tl.to(interiorRef.current, { scale: 9, ease: "power2.in", duration: 0.66 }, 0.04);
-      tl.to(interiorRef.current, { autoAlpha: 0, duration: 0.2, ease: "power1.out" }, 0.5);
+      // The push: the interior pushes toward the window and dissolves
+      // through the glass; the skyline drifts forward and warms into view.
+      tl.to(skylineRef.current, { scale: 1.2, ease: "none", duration: 1 }, 0);
+      tl.to(interiorRef.current, { scale: 2.8, ease: "power2.in", duration: 0.62 }, 0.04);
+      tl.to(interiorRef.current, { autoAlpha: 0, duration: 0.24, ease: "power1.inOut" }, 0.34);
+      tl.to(glassRef.current, { autoAlpha: 0, duration: 0.3, ease: "power1.inOut" }, 0.3);
 
       tl.to(cueRef.current, { autoAlpha: 0, duration: 0.05 }, 0.08);
       tl.to(hudRef.current, { autoAlpha: 0, duration: 0.1 }, 0.4);
@@ -199,7 +183,6 @@ export default function ScrollHero() {
 
     return () => {
       ctxGsap.revert();
-      window.removeEventListener("resize", setRoomVars);
       window.dispatchEvent(new Event("hero:leave"));
     };
   }, []);
@@ -207,81 +190,32 @@ export default function ScrollHero() {
   return (
     <section ref={rootRef} className="relative bg-[#0a0b0d] text-cream-50">
       <div ref={pinRef} className="relative h-[100svh] w-full overflow-hidden">
-        {/* Skyline (the view through the window) */}
+        {/* Skyline — the Amsterdam Zuid view, revealed through the glass */}
         <div
           ref={skylineRef}
-          className="absolute inset-0 z-0 bg-cover bg-center will-change-transform"
+          className="absolute inset-0 z-0 bg-cover will-change-transform"
           style={{ backgroundImage: `url(${asset("/hero/zuid-skyline.jpg")})`, backgroundPosition: "50% 42%" }}
           aria-hidden="true"
         />
 
-        {/* Behind-glass tint (dusk / reflection), clears as we exit */}
+        {/* Cool dusk tint over the skyline, clears as we emerge into the warmth */}
         <div
           ref={glassRef}
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(180deg, rgba(12,20,34,0.5), rgba(8,12,22,0.62)), linear-gradient(120deg, rgba(220,230,255,0.07), transparent 42%)",
+              "linear-gradient(180deg, rgba(14,22,38,0.42), rgba(10,14,26,0.5)), linear-gradient(120deg, rgba(210,224,255,0.06), transparent 44%)",
           }}
           aria-hidden="true"
         />
 
-        {/* The office interior — a one-point-perspective room (floor, ceiling,
-            side walls) receding to the window, lit by the skyline. The whole
-            room scales past the lens on scroll (dolly through the window). */}
-        <div ref={interiorRef} className="pointer-events-none absolute inset-0 z-[2] will-change-transform" aria-hidden="true">
-          {/* ceiling — with linear light reflecting toward the window */}
-          <div
-            className="absolute inset-0"
-            style={{
-              clipPath: "polygon(0% 0%, 100% 0%, var(--wx1) var(--wy0), var(--wx0) var(--wy0))",
-              background:
-                "radial-gradient(46% 86% at 50% 100%, rgba(255,206,150,0.10), transparent 70%), linear-gradient(to bottom, #060709, #14110c)",
-            }}
-          />
-          {/* floor — polished, catching warm light reflected from the window */}
-          <div
-            className="absolute inset-0"
-            style={{
-              clipPath: "polygon(0% 100%, 100% 100%, var(--wx1) var(--wy1), var(--wx0) var(--wy1))",
-              background:
-                "radial-gradient(40% 92% at 50% 0%, rgba(255,198,138,0.16), transparent 72%), linear-gradient(to top, #050608, #17130d)",
-            }}
-          />
-          {/* left wall */}
-          <div
-            className="absolute inset-0"
-            style={{
-              clipPath: "polygon(0% 0%, var(--wx0) var(--wy0), var(--wx0) var(--wy1), 0% 100%)",
-              background: "linear-gradient(to right, #060709, #16130d)",
-            }}
-          />
-          {/* right wall */}
-          <div
-            className="absolute inset-0"
-            style={{
-              clipPath: "polygon(100% 0%, var(--wx1) var(--wy0), var(--wx1) var(--wy1), 100% 100%)",
-              background: "linear-gradient(to left, #060709, #16130d)",
-            }}
-          />
-          {/* window frame + warm light spill + mullions */}
-          <div
-            className="absolute"
-            style={{
-              left: "var(--wx0)",
-              right: "calc(100% - var(--wx1))",
-              top: "var(--wy0)",
-              bottom: "calc(100% - var(--wy1))",
-              border: "1px solid #20242a",
-              boxShadow:
-                "inset 0 0 90px 10px rgba(255,196,128,0.16), 0 0 80px 16px rgba(255,186,120,0.12)",
-            }}
-          >
-            <div className="absolute inset-y-0 left-1/3 w-[2px] bg-[#1a1d22]" />
-            <div className="absolute inset-y-0 left-2/3 w-[2px] bg-[#1a1d22]" />
-            <div className="absolute inset-x-0 top-1/2 h-[2px] bg-[#1a1d22]" />
-          </div>
-        </div>
+        {/* The office interior we push through (real photograph) */}
+        <div
+          ref={interiorRef}
+          className="absolute inset-0 z-[2] bg-cover will-change-transform"
+          style={{ backgroundImage: `url(${asset("/hero/office-interior.jpg")})`, backgroundPosition: "50% 50%" }}
+          aria-hidden="true"
+        />
 
         {/* Warm gold accent (golden hour) — bleeds in over the city */}
         <div
