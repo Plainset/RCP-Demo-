@@ -205,7 +205,7 @@ export default function ScrollHero() {
         <div
           ref={skylineRef}
           className="absolute inset-0 z-0 bg-cover will-change-transform"
-          style={{ backgroundImage: `url(${asset("/hero/zuid-skyline.jpg")})`, backgroundPosition: "50% 42%" }}
+          style={{ backgroundImage: `url(${asset("/hero/zuid-skyline.webp")})`, backgroundPosition: "50% 42%" }}
           aria-hidden="true"
         />
 
