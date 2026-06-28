@@ -3,20 +3,27 @@
 /* ------------------------------------------------------------------ *
  *  ScrollHero — a full-screen, scroll-driven cinematic hero.
  *
- *  Concept: "The View from Amsterdam Zuid." We open INSIDE a real, dark
- *  high-floor office lounge looking out through floor-to-ceiling glass.
- *  As the user scrolls, the camera pushes toward the window and crosses
- *  through the glass — the cool interior scales up and dissolves and the
- *  warm golden-hour Amsterdam Zuid skyline opens up to fill the frame,
- *  where the headline lands. A dawn dissolve hands off to the cream page.
+ *  Concept: "The View from Amsterdam Zuid." We open INSIDE a dark high-floor
+ *  office lounge looking through floor-to-ceiling glass onto the Amsterdam
+ *  Zuid (Zuidas) skyline. Crucially there is only ONE skyline in the whole
+ *  scene: the office foreground is a transparent cut-out (office-cutout.webp,
+ *  room/mullions/furniture opaque, glass punched out) sitting OVER the real
+ *  Zuidas photo. As the user scrolls, the camera dollies forward — the room
+ *  scales up and flies past the glass while the same skyline simply opens to
+ *  fill the frame, and a cool dusk "glass" tint clears to warm golden hour.
+ *  The headline lands over the city; a dawn dissolve hands off to cream.
  *
- *  Pinned (~340vh); scroll progress (0→1) drives one GSAP timeline. Pure
- *  DOM transform/opacity (GPU, 60fps) — no canvas/video. Both photos are
- *  self-hosted, copyright-free Unsplash images (img-src 'self'). Honours
- *  prefers-reduced-motion (static composed frame). GSAP is bundled.
+ *  Because the view through the window and the final frame are literally the
+ *  same skyline layer, the move reads as one continuous shot — not a cut
+ *  between two photos.
  *
- *  Interior: dark city lounge (Unsplash). Skyline: Amsterdam Zuid /
- *  Zuidas — Lennart Schulz (Unsplash License).
+ *  Pinned (~340vh); scroll progress (0→1) drives one GSAP timeline. Pure DOM
+ *  transform/opacity (GPU, 60fps) — no canvas/video. Self-hosted assets
+ *  (img-src 'self'); honours prefers-reduced-motion. GSAP is bundled.
+ *
+ *  Skyline: Amsterdam Zuid / Zuidas — Lennart Schulz (Unsplash License). The
+ *  office cut-out is derived from a dark high-floor lounge (Unsplash), its
+ *  window matted out and the Zuidas skyline shown through it.
  * ------------------------------------------------------------------ */
 
 import { Fragment, useEffect, useRef } from "react";
@@ -122,9 +129,9 @@ export default function ScrollHero() {
     const ctxGsap = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
 
-      gsap.set(skylineRef.current, { scale: 1.05, transformOrigin: "50% 45%" });
+      gsap.set(skylineRef.current, { scale: 1.06, transformOrigin: "50% 42%" });
       gsap.set(glassRef.current, { autoAlpha: 1 });
-      gsap.set(interiorRef.current, { scale: 1, autoAlpha: 1, transformOrigin: "54% 44%" });
+      gsap.set(interiorRef.current, { scale: 1, autoAlpha: 1, transformOrigin: "50% 40%" });
       gsap.set([glowRef.current, scrimRef.current, dawnRef.current], { autoAlpha: 0 });
       gsap.set([eyebrowRef.current, taglineRef.current, ctaRef.current], { y: 18, autoAlpha: 0 });
 
@@ -149,33 +156,35 @@ export default function ScrollHero() {
         },
       });
 
-      // The push: the interior pushes toward the window and dissolves
-      // through the glass; the skyline drifts forward and warms into view.
-      tl.to(skylineRef.current, { scale: 1.2, ease: "none", duration: 1 }, 0);
-      tl.to(interiorRef.current, { scale: 2.8, ease: "power2.in", duration: 0.62 }, 0.04);
-      tl.to(interiorRef.current, { autoAlpha: 0, duration: 0.24, ease: "power1.inOut" }, 0.34);
-      tl.to(glassRef.current, { autoAlpha: 0, duration: 0.3, ease: "power1.inOut" }, 0.3);
+      // The dolly: the same Zuidas skyline drifts forward while the office
+      // room scales up and flies past the glass (it's a transparent cut-out,
+      // so the city behind it never changes — one continuous shot). The cool
+      // dusk "glass" tint clears as we emerge into golden hour.
+      tl.to(skylineRef.current, { scale: 1.18, ease: "none", duration: 1 }, 0);
+      tl.to(interiorRef.current, { scale: 3.1, ease: "power2.in", duration: 0.6 }, 0);
+      tl.to(interiorRef.current, { autoAlpha: 0, duration: 0.2, ease: "power1.out" }, 0.36);
+      tl.to(glassRef.current, { autoAlpha: 0, duration: 0.36, ease: "power1.inOut" }, 0.16);
 
-      tl.to(cueRef.current, { autoAlpha: 0, duration: 0.05 }, 0.08);
-      tl.to(hudRef.current, { autoAlpha: 0, duration: 0.1 }, 0.4);
+      tl.to(cueRef.current, { autoAlpha: 0, duration: 0.05 }, 0.06);
+      tl.to(hudRef.current, { autoAlpha: 0, duration: 0.1 }, 0.42);
 
       // Out over the city: scrim for legibility, then the engineered reveal.
-      tl.to(scrimRef.current, { autoAlpha: 1, duration: 0.14 }, 0.56);
-      tl.to(glowRef.current, { autoAlpha: 1, duration: 0.18, ease: "power1.out" }, 0.62);
-      tl.to(eyebrowRef.current, { y: 0, autoAlpha: 1, duration: 0.05 }, 0.6);
+      tl.to(scrimRef.current, { autoAlpha: 1, duration: 0.16 }, 0.5);
+      tl.to(glowRef.current, { autoAlpha: 1, duration: 0.2, ease: "power1.out" }, 0.56);
+      tl.to(eyebrowRef.current, { y: 0, autoAlpha: 1, duration: 0.05 }, 0.55);
       tl.fromTo(
         letters,
         { yPercent: 120, autoAlpha: 0 },
-        { yPercent: 0, autoAlpha: 1, ease: "power3.out", duration: 0.08, stagger: { amount: 0.1 } },
-        0.63,
+        { yPercent: 0, autoAlpha: 1, ease: "power3.out", duration: 0.09, stagger: { amount: 0.12 } },
+        0.58,
       );
-      tl.to(taglineRef.current, { y: 0, autoAlpha: 1, duration: 0.05 }, 0.78);
-      tl.to(ctaRef.current, { y: 0, autoAlpha: 1, duration: 0.05 }, 0.82);
+      tl.to(taglineRef.current, { y: 0, autoAlpha: 1, duration: 0.05 }, 0.74);
+      tl.to(ctaRef.current, { y: 0, autoAlpha: 1, duration: 0.05 }, 0.78);
 
       // Dawn dissolve to cream for the hand-off.
-      tl.to(textInnerRef.current, { yPercent: -5, duration: 0.12 }, 0.9);
-      tl.to(dawnRef.current, { autoAlpha: 1, duration: 0.12 }, 0.9);
-      tl.to([textWrapRef.current, glowRef.current, scrimRef.current], { autoAlpha: 0, duration: 0.1 }, 0.92);
+      tl.to(textInnerRef.current, { yPercent: -5, duration: 0.12 }, 0.88);
+      tl.to(dawnRef.current, { autoAlpha: 1, duration: 0.12 }, 0.88);
+      tl.to([textWrapRef.current, glowRef.current, scrimRef.current], { autoAlpha: 0, duration: 0.1 }, 0.9);
     }, root);
 
     window.dispatchEvent(new Event("hero:enter"));
@@ -190,7 +199,9 @@ export default function ScrollHero() {
   return (
     <section ref={rootRef} className="relative bg-[#0a0b0d] text-cream-50">
       <div ref={pinRef} className="relative h-[100svh] w-full overflow-hidden">
-        {/* Skyline — the Amsterdam Zuid view, revealed through the glass */}
+        {/* The one and only skyline — Amsterdam Zuid. Everything else sits
+            in front of this single layer, so the view through the window and
+            the final frame are guaranteed to be the same city. */}
         <div
           ref={skylineRef}
           className="absolute inset-0 z-0 bg-cover will-change-transform"
@@ -198,22 +209,29 @@ export default function ScrollHero() {
           aria-hidden="true"
         />
 
-        {/* Cool dusk tint over the skyline, clears as we emerge into the warmth */}
+        {/* "Glass": a cool dusk tint that also desaturates the view seen
+            through the window (backdrop-filter sees only the skyline below).
+            It clears on scroll so the city warms into golden hour. */}
         <div
           ref={glassRef}
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(180deg, rgba(14,22,38,0.42), rgba(10,14,26,0.5)), linear-gradient(120deg, rgba(210,224,255,0.06), transparent 44%)",
+              "linear-gradient(180deg, rgba(12,20,36,0.50), rgba(8,12,24,0.46)), linear-gradient(115deg, rgba(150,172,196,0.10), transparent 50%)",
+            backdropFilter: "saturate(0.6) brightness(0.96)",
+            WebkitBackdropFilter: "saturate(0.6) brightness(0.96)",
           }}
           aria-hidden="true"
         />
 
-        {/* The office interior we push through (real photograph) */}
+        {/* The office foreground — a transparent cut-out (room, mullions,
+            furniture and plants are opaque; the window is punched out so the
+            skyline above shows through). It scales up and flies past as we
+            push out through the glass. */}
         <div
           ref={interiorRef}
           className="absolute inset-0 z-[2] bg-cover will-change-transform"
-          style={{ backgroundImage: `url(${asset("/hero/office-interior.jpg")})`, backgroundPosition: "50% 50%" }}
+          style={{ backgroundImage: `url(${asset("/hero/office-cutout.webp")})`, backgroundPosition: "50% 50%" }}
           aria-hidden="true"
         />
 
