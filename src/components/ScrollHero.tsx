@@ -123,7 +123,7 @@ export default function ScrollHero() {
     const ctxGsap = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
 
-      gsap.set(skylineRef.current, { scale: 1.06, transformOrigin: "50% 45%" });
+      gsap.set(skylineRef.current, { scale: 1.04, transformOrigin: "50% 45%" });
       gsap.set(glassRef.current, { autoAlpha: 1 });
       gsap.set(interiorRef.current, { scale: 1, autoAlpha: 1, transformOrigin: "50% 50%" });
       gsap.set([glowRef.current, scrimRef.current, dawnRef.current], { autoAlpha: 0 });
@@ -152,10 +152,10 @@ export default function ScrollHero() {
 
       // The push: skyline drifts forward slowly (far); interior rushes past
       // (near) and fades; the glass tint clears as we exit.
-      tl.to(skylineRef.current, { scale: 1.2, ease: "none", duration: 1 }, 0);
-      tl.to(glassRef.current, { autoAlpha: 0, duration: 0.45, ease: "power1.inOut" }, 0.06);
-      tl.to(interiorRef.current, { scale: 6.5, ease: "power1.in", duration: 0.64 }, 0.05);
-      tl.to(interiorRef.current, { autoAlpha: 0, duration: 0.2, ease: "power1.out" }, 0.46);
+      tl.to(skylineRef.current, { scale: 1.22, ease: "none", duration: 1 }, 0);
+      tl.to(glassRef.current, { autoAlpha: 0, duration: 0.48, ease: "power1.inOut" }, 0.08);
+      tl.to(interiorRef.current, { scale: 9, ease: "power2.in", duration: 0.66 }, 0.04);
+      tl.to(interiorRef.current, { autoAlpha: 0, duration: 0.2, ease: "power1.out" }, 0.5);
 
       tl.to(cueRef.current, { autoAlpha: 0, duration: 0.05 }, 0.08);
       tl.to(hudRef.current, { autoAlpha: 0, duration: 0.1 }, 0.4);
@@ -212,14 +212,15 @@ export default function ScrollHero() {
 
         {/* Dark interior — floor-to-ceiling window frame we push through */}
         <div ref={interiorRef} className="pointer-events-none absolute inset-0 z-[2] will-change-transform" aria-hidden="true">
-          {/* four walls leaving a centred window opening */}
-          <div className="absolute inset-x-0 top-0 h-[24%] bg-[#0a0b0d] md:h-[15%]" />
-          <div className="absolute inset-x-0 bottom-0 h-[24%] bg-[#0a0b0d] md:h-[15%]" />
-          <div className="absolute inset-y-[24%] left-0 w-[8%] bg-[#0a0b0d] md:inset-y-[15%] md:w-[27%]" />
-          <div className="absolute inset-y-[24%] right-0 w-[8%] bg-[#0a0b0d] md:inset-y-[15%] md:w-[27%]" />
+          {/* four walls leaving a small, centred window opening (camera deep
+              in the room) — the push scales this past the lens */}
+          <div className="absolute inset-x-0 top-0 h-[32%] bg-[#0a0b0d] md:h-[28%]" />
+          <div className="absolute inset-x-0 bottom-0 h-[32%] bg-[#0a0b0d] md:h-[28%]" />
+          <div className="absolute inset-y-[32%] left-0 w-[18%] bg-[#0a0b0d] md:inset-y-[28%] md:w-[35%]" />
+          <div className="absolute inset-y-[32%] right-0 w-[18%] bg-[#0a0b0d] md:inset-y-[28%] md:w-[35%]" />
           {/* window frame + warm light spill + mullions */}
           <div
-            className="absolute inset-x-[8%] inset-y-[24%] border border-[#16181c] md:inset-x-[27%] md:inset-y-[15%]"
+            className="absolute inset-x-[18%] inset-y-[32%] border border-[#16181c] md:inset-x-[35%] md:inset-y-[28%]"
             style={{
               boxShadow:
                 "inset 0 0 70px 6px rgba(255,196,128,0.16), 0 0 60px 10px rgba(255,186,120,0.10)",
