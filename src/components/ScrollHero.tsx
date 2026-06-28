@@ -91,6 +91,20 @@ export default function ScrollHero() {
       }
     };
 
+    // The window rectangle (as % of viewport) the perspective room recedes to.
+    // Smaller on desktop (deeper room), larger on mobile so the view reads.
+    const setRoomVars = () => {
+      const el = interiorRef.current;
+      if (!el) return;
+      const m = window.innerWidth < 768;
+      el.style.setProperty("--wx0", m ? "22%" : "35%");
+      el.style.setProperty("--wx1", m ? "78%" : "65%");
+      el.style.setProperty("--wy0", m ? "34%" : "29%");
+      el.style.setProperty("--wy1", m ? "66%" : "71%");
+    };
+    setRoomVars();
+    window.addEventListener("resize", setRoomVars);
+
     /* ---- Reduced motion: composed final frame (out the window) --- */
     if (reduce) {
       gsap.set(skylineRef.current, { scale: 1.12 });
@@ -115,6 +129,7 @@ export default function ScrollHero() {
       window.addEventListener("scroll", onScroll, { passive: true });
       return () => {
         window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", setRoomVars);
         window.dispatchEvent(new Event("hero:leave"));
       };
     }
@@ -184,6 +199,7 @@ export default function ScrollHero() {
 
     return () => {
       ctxGsap.revert();
+      window.removeEventListener("resize", setRoomVars);
       window.dispatchEvent(new Event("hero:leave"));
     };
   }, []);
@@ -210,24 +226,60 @@ export default function ScrollHero() {
           aria-hidden="true"
         />
 
-        {/* Dark interior — floor-to-ceiling window frame we push through */}
+        {/* The office interior — a one-point-perspective room (floor, ceiling,
+            side walls) receding to the window, lit by the skyline. The whole
+            room scales past the lens on scroll (dolly through the window). */}
         <div ref={interiorRef} className="pointer-events-none absolute inset-0 z-[2] will-change-transform" aria-hidden="true">
-          {/* four walls leaving a small, centred window opening (camera deep
-              in the room) — the push scales this past the lens */}
-          <div className="absolute inset-x-0 top-0 h-[32%] bg-[#0a0b0d] md:h-[28%]" />
-          <div className="absolute inset-x-0 bottom-0 h-[32%] bg-[#0a0b0d] md:h-[28%]" />
-          <div className="absolute inset-y-[32%] left-0 w-[18%] bg-[#0a0b0d] md:inset-y-[28%] md:w-[35%]" />
-          <div className="absolute inset-y-[32%] right-0 w-[18%] bg-[#0a0b0d] md:inset-y-[28%] md:w-[35%]" />
+          {/* ceiling — with linear light reflecting toward the window */}
+          <div
+            className="absolute inset-0"
+            style={{
+              clipPath: "polygon(0% 0%, 100% 0%, var(--wx1) var(--wy0), var(--wx0) var(--wy0))",
+              background:
+                "radial-gradient(46% 86% at 50% 100%, rgba(255,206,150,0.10), transparent 70%), linear-gradient(to bottom, #060709, #14110c)",
+            }}
+          />
+          {/* floor — polished, catching warm light reflected from the window */}
+          <div
+            className="absolute inset-0"
+            style={{
+              clipPath: "polygon(0% 100%, 100% 100%, var(--wx1) var(--wy1), var(--wx0) var(--wy1))",
+              background:
+                "radial-gradient(40% 92% at 50% 0%, rgba(255,198,138,0.16), transparent 72%), linear-gradient(to top, #050608, #17130d)",
+            }}
+          />
+          {/* left wall */}
+          <div
+            className="absolute inset-0"
+            style={{
+              clipPath: "polygon(0% 0%, var(--wx0) var(--wy0), var(--wx0) var(--wy1), 0% 100%)",
+              background: "linear-gradient(to right, #060709, #16130d)",
+            }}
+          />
+          {/* right wall */}
+          <div
+            className="absolute inset-0"
+            style={{
+              clipPath: "polygon(100% 0%, var(--wx1) var(--wy0), var(--wx1) var(--wy1), 100% 100%)",
+              background: "linear-gradient(to left, #060709, #16130d)",
+            }}
+          />
           {/* window frame + warm light spill + mullions */}
           <div
-            className="absolute inset-x-[18%] inset-y-[32%] border border-[#16181c] md:inset-x-[35%] md:inset-y-[28%]"
+            className="absolute"
             style={{
+              left: "var(--wx0)",
+              right: "calc(100% - var(--wx1))",
+              top: "var(--wy0)",
+              bottom: "calc(100% - var(--wy1))",
+              border: "1px solid #20242a",
               boxShadow:
-                "inset 0 0 70px 6px rgba(255,196,128,0.16), 0 0 60px 10px rgba(255,186,120,0.10)",
+                "inset 0 0 90px 10px rgba(255,196,128,0.16), 0 0 80px 16px rgba(255,186,120,0.12)",
             }}
           >
-            <div className="absolute inset-y-0 left-1/3 w-[2px] bg-[#15181d]" />
-            <div className="absolute inset-y-0 left-2/3 w-[2px] bg-[#15181d]" />
+            <div className="absolute inset-y-0 left-1/3 w-[2px] bg-[#1a1d22]" />
+            <div className="absolute inset-y-0 left-2/3 w-[2px] bg-[#1a1d22]" />
+            <div className="absolute inset-x-0 top-1/2 h-[2px] bg-[#1a1d22]" />
           </div>
         </div>
 
