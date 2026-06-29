@@ -299,7 +299,7 @@ export default function ScrollHero() {
               <Link href="/portfolio" className="btn btn-gold">
                 Explore our strategies
               </Link>
-              <Link href="/login" className="btn btn-ghost-light">
+              <Link href="/login" className="btn btn-gold">
                 Investor login
               </Link>
             </div>
