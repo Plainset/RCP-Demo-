@@ -147,7 +147,10 @@ export default function ScrollHero() {
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             setBar(self.progress);
-            const past = self.progress > 0.9;
+            // Flip the header to dark-on-cream only at the very end, as the pin
+            // releases and the cream band takes over — the hero stays dark (and
+            // the header light) right up to the hand-off.
+            const past = self.progress > 0.98;
             if (past !== headerPast) {
               headerPast = past;
               window.dispatchEvent(new Event(past ? "hero:leave" : "hero:enter"));
@@ -181,10 +184,10 @@ export default function ScrollHero() {
       tl.to(taglineRef.current, { y: 0, autoAlpha: 1, duration: 0.05 }, 0.74);
       tl.to(ctaRef.current, { y: 0, autoAlpha: 1, duration: 0.05 }, 0.78);
 
-      // Dawn dissolve to cream for the hand-off.
-      tl.to(textInnerRef.current, { yPercent: -5, duration: 0.12 }, 0.88);
-      tl.to(dawnRef.current, { autoAlpha: 1, duration: 0.12 }, 0.88);
-      tl.to([textWrapRef.current, glowRef.current, scrimRef.current], { autoAlpha: 0, duration: 0.1 }, 0.9);
+      // No dissolve: the finished composition — the Zuidas skyline under golden
+      // hour with the headline over it — holds as the final frame and stays put
+      // for the rest of the pin. The cream content band below then scrolls up
+      // beneath it (a hard cut) once the pin releases.
     }, root);
 
     window.dispatchEvent(new Event("hero:enter"));
