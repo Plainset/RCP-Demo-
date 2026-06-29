@@ -3,23 +3,27 @@
 /* ------------------------------------------------------------------ *
  *  ScrollHero — a full-screen, scroll-driven cinematic hero.
  *
- *  Concept: "The View from Amsterdam Zuid." We open INSIDE Rubens Capital
- *  Partners' own office at dusk — desk rows and floor-to-ceiling glass looking
- *  out over the Amsterdam Zuid (Zuidas) skyline. The whole scene is a SINGLE
- *  image (hero-office.webp); on scroll the camera leans slowly toward the
- *  window — the desks slide to the edges as a frame while the skyline opens to
- *  fill the view, and a cool dusk wash clears into warm golden hour. The
- *  headline lands over the city.
+ *  Concept: "The View from Amsterdam Zuid." We open INSIDE a dark high-floor
+ *  office lounge looking through floor-to-ceiling glass onto the Amsterdam
+ *  Zuid (Zuidas) skyline. Crucially there is only ONE skyline in the whole
+ *  scene: the office foreground is a transparent cut-out (office-cutout.webp,
+ *  room/mullions/furniture opaque, glass punched out) sitting OVER the real
+ *  Zuidas photo. As the user scrolls, the camera dollies forward — the room
+ *  scales up and flies past the glass while the same skyline simply opens to
+ *  fill the frame, and a cool dusk "glass" tint clears to warm golden hour.
+ *  The headline lands over the city; a dawn dissolve hands off to cream.
  *
- *  Because it is one continuous image throughout, the move never cuts — it
- *  simply pushes in. No compositing, no second skyline layer.
+ *  Because the view through the window and the final frame are literally the
+ *  same skyline layer, the move reads as one continuous shot — not a cut
+ *  between two photos.
  *
  *  Pinned (~340vh); scroll progress (0→1) drives one GSAP timeline. Pure DOM
- *  transform/opacity (GPU, 60fps) — no canvas/video. Self-hosted asset
+ *  transform/opacity (GPU, 60fps) — no canvas/video. Self-hosted assets
  *  (img-src 'self'); honours prefers-reduced-motion. GSAP is bundled.
  *
- *  hero-office.webp: an AI-generated dusk office-over-Zuid scene supplied by
- *  the client, with its baked-in UI painted out and upscaled for Retina.
+ *  Skyline: Amsterdam Zuid / Zuidas — Lennart Schulz (Unsplash License). The
+ *  office cut-out is derived from a dark high-floor lounge (Unsplash), its
+ *  window matted out and the Zuidas skyline shown through it.
  * ------------------------------------------------------------------ */
 
 import { Fragment, useEffect, useRef } from "react";
@@ -65,6 +69,7 @@ export default function ScrollHero() {
   const pinRef = useRef<HTMLDivElement>(null);
   const skylineRef = useRef<HTMLDivElement>(null);
   const glassRef = useRef<HTMLDivElement>(null);
+  const interiorRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const scrimRef = useRef<HTMLDivElement>(null);
   const dawnRef = useRef<HTMLDivElement>(null);
@@ -94,8 +99,8 @@ export default function ScrollHero() {
 
     /* ---- Reduced motion: composed final frame (out the window) --- */
     if (reduce) {
-      gsap.set(skylineRef.current, { scale: 1.32, transformOrigin: "50% 40%" });
-      gsap.set([glassRef.current, hudRef.current, cueRef.current], {
+      gsap.set(skylineRef.current, { scale: 1.12 });
+      gsap.set([glassRef.current, interiorRef.current, hudRef.current, cueRef.current], {
         autoAlpha: 0,
       });
       gsap.set([scrimRef.current, glowRef.current], { autoAlpha: 1 });
@@ -124,8 +129,9 @@ export default function ScrollHero() {
     const ctxGsap = gsap.context(() => {
       gsap.registerPlugin(ScrollTrigger);
 
-      gsap.set(skylineRef.current, { scale: 1, transformOrigin: "50% 40%" });
+      gsap.set(skylineRef.current, { scale: 1.06, transformOrigin: "50% 42%" });
       gsap.set(glassRef.current, { autoAlpha: 1 });
+      gsap.set(interiorRef.current, { scale: 1, autoAlpha: 1, transformOrigin: "50% 40%" });
       gsap.set([glowRef.current, scrimRef.current, dawnRef.current], { autoAlpha: 0 });
       gsap.set([eyebrowRef.current, taglineRef.current, ctaRef.current], { y: 18, autoAlpha: 0 });
 
@@ -153,14 +159,14 @@ export default function ScrollHero() {
         },
       });
 
-      // The dolly: one continuous shot. The whole office scene — RCP's own
-      // floor, desks and floor-to-ceiling glass — pushes slowly toward the
-      // window, the desks sliding to the edges as a frame while the Amsterdam
-      // Zuid skyline opens to fill the view. The cool dusk "glass" tint clears
-      // as we settle into golden hour. It's a single image throughout, so the
-      // move never cuts — the camera simply leans into the city.
-      tl.to(skylineRef.current, { scale: 1.5, ease: "none", duration: 1 }, 0);
-      tl.to(glassRef.current, { autoAlpha: 0, duration: 0.4, ease: "power1.inOut" }, 0.12);
+      // The dolly: the same Zuidas skyline drifts forward while the office
+      // room scales up and flies past the glass (it's a transparent cut-out,
+      // so the city behind it never changes — one continuous shot). The cool
+      // dusk "glass" tint clears as we emerge into golden hour.
+      tl.to(skylineRef.current, { scale: 1.18, ease: "none", duration: 1 }, 0);
+      tl.to(interiorRef.current, { scale: 3.1, ease: "power2.in", duration: 0.6 }, 0);
+      tl.to(interiorRef.current, { autoAlpha: 0, duration: 0.2, ease: "power1.out" }, 0.36);
+      tl.to(glassRef.current, { autoAlpha: 0, duration: 0.36, ease: "power1.inOut" }, 0.16);
 
       tl.to(cueRef.current, { autoAlpha: 0, duration: 0.05 }, 0.06);
       tl.to(hudRef.current, { autoAlpha: 0, duration: 0.1 }, 0.42);
@@ -196,27 +202,39 @@ export default function ScrollHero() {
   return (
     <section ref={rootRef} className="relative bg-[#0a0b0d] text-cream-50">
       <div ref={pinRef} className="relative h-[100svh] w-full overflow-hidden">
-        {/* The single hero scene — RCP's own office at dusk: desks and
-            floor-to-ceiling glass looking out over the Amsterdam Zuid skyline.
-            One coherent image that slowly pushes toward the window on scroll. */}
+        {/* The one and only skyline — Amsterdam Zuid. Everything else sits
+            in front of this single layer, so the view through the window and
+            the final frame are guaranteed to be the same city. */}
         <div
           ref={skylineRef}
           className="absolute inset-0 z-0 bg-cover will-change-transform"
-          style={{ backgroundImage: `url(${asset("/hero/hero-office.webp")})`, backgroundPosition: "50% 50%" }}
+          style={{ backgroundImage: `url(${asset("/hero/zuid-skyline.webp")})`, backgroundPosition: "50% 42%" }}
           aria-hidden="true"
         />
 
-        {/* "Glass": a light cool dusk wash over the scene that lifts on scroll
-            so the city warms into golden hour. Kept subtle — the image is
-            already graded, so this only nudges the mood (no backdrop-filter,
-            which would desaturate the whole opaque scene). */}
+        {/* "Glass": a cool dusk tint that also desaturates the view seen
+            through the window (backdrop-filter sees only the skyline below).
+            It clears on scroll so the city warms into golden hour. */}
         <div
           ref={glassRef}
           className="pointer-events-none absolute inset-0 z-[1]"
           style={{
             background:
-              "linear-gradient(180deg, rgba(12,20,36,0.16), rgba(8,12,24,0.12)), linear-gradient(115deg, rgba(150,172,196,0.06), transparent 55%)",
+              "linear-gradient(180deg, rgba(12,20,36,0.24), rgba(8,12,24,0.20)), linear-gradient(115deg, rgba(150,172,196,0.10), transparent 50%)",
+            backdropFilter: "saturate(0.68) brightness(1.10)",
+            WebkitBackdropFilter: "saturate(0.68) brightness(1.10)",
           }}
+          aria-hidden="true"
+        />
+
+        {/* The office foreground — a transparent cut-out (room, mullions,
+            furniture and plants are opaque; the window is punched out so the
+            skyline above shows through). It scales up and flies past as we
+            push out through the glass. */}
+        <div
+          ref={interiorRef}
+          className="absolute inset-0 z-[2] bg-cover will-change-transform"
+          style={{ backgroundImage: `url(${asset("/hero/office-cutout.webp")})`, backgroundPosition: "50% 50%" }}
           aria-hidden="true"
         />
 
